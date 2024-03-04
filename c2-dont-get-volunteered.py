@@ -47,32 +47,30 @@ Output:
 """
 
 
-from collections import deque
+from collections import deque, namedtuple
+
+# my solution
 
 def solution(src, dest):
-    start = Node(value=src)
+    start = Node(value=src, depth=0)
     return breadthFirstSearch(start, dest)
     
 class Node():
-
     def __init__(self, value, depth=0):
         self.value = value
         self.depth = depth
-        self.children = []
     
-    def add_child(self, child):
-        self.children.append(child)
-        
-    def get_children(self):
-        return self.children
-    
-    def __repr__(self):
-        """
-        Represents the Node as a string for debugging.
-        """
-        return f"({self.value}, {self.depth})"
-        # return f"{self.value}"
-        # return f"Node(value={self.value}, children={len(self.children)})"veri
+#     def __repr__(self):
+#         """
+#         Represents the Node as a string for debugging.
+#         """
+#         return f"({self.value}, {self.depth})"
+#         # return f"{self.value}"
+#         # return f"Node(value={self.value}, children={len(self.children)})"veri
+
+# Slower!!
+# Node = namedtuple('Node', ['value', 'depth']) 
+
 
 def breadthFirstSearch(start, goal):
     # start: Node goal: int
@@ -117,7 +115,11 @@ def getChildren(node):
         
     return [Node(value = node.value+x, depth=node.depth+1) for x in moves[start:end] if node.value+x >= 0 and node.value+x < 64]
 
+print(solution(7, 15))
 
+
+
+## Not my solution
 from queue import Queue
 
 def minKnightMoves(src, dest):
@@ -165,50 +167,17 @@ test_cases = [
 # test_cases_with_moves = [(src, dest, minKnightMoves(src, dest)) for src, dest in test_cases]
 # print(test_cases_with_moves)
 
-import time
+# benchmarking
 
-def profile_function_repeated(func, repetitions):
-    """
-    A function to measure the execution time of a function called repeatedly.
-    
-    Args:
-    - func: The function to be profiled.
-    - repetitions: The number of times to execute the function.
-    
-    Returns:
-    The total execution time for all repetitions.
-    """
-    def wrapper(*args, **kwargs):
-        total_time = 0  # Total execution time
-        for _ in range(repetitions):
-            start_time = time.time()  # Start time before function execution
-            func(*args, **kwargs)  # Execute the function
-            end_time = time.time()  # End time after function execution
-            total_time += (end_time - start_time)  # Accumulate execution time
-        avg_time = total_time / repetitions
-        print(f"{func.__name__} called {repetitions} times took {total_time} seconds in total.")
-        # print(f"Average time per call: {avg_time} seconds.")
-        return total_time
-    
-    return wrapper
-
-# Example function to be profiled
-def example_function_to_repeat(n):
-    """
-    Another example function that calculates the sum of numbers from 1 to n.
-    """
-    return sum(range(1, n + 1))
-
-# Profiling the example function to repeat it 1000000 times
-# Note: Calling the profiler directly with a function and repetition count
+from profiler import profiler
 
 repeat = 100000
 
-profiler = profile_function_repeated(solution, repeat)
-profiler(7, 15) 
+profiling = profiler(solution, repeat)
+profiling(7, 15) 
 
-profiler = profile_function_repeated(minKnightMoves, repeat)
-profiler(7, 15)  
+profiling = profiler(minKnightMoves, repeat)
+profiling(7, 15)  
 
  
 

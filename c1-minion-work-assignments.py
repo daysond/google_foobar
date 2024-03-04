@@ -27,6 +27,8 @@ Output:
 """
 import time
 
+### first solution
+
 def solution(data, n): 
     # Your code here
     
@@ -53,6 +55,7 @@ def solution(data, n):
         
     return data
 
+### Final Solution
 def solution2(data, n): 
     if n == 0:
         data.clear()
@@ -67,14 +70,16 @@ def solution2(data, n):
                     data.remove(num)
     return data
 
+
+
+
+### Not my solution
+
 def solution_in_place(data, n):
-    # Count the occurrences of each number in data
     counts = {}
     for number in data:
         counts[number] = counts.get(number, 0) + 1
     
-    # Remove elements from data that occur more than n times
-    # Iterate in reverse to avoid skipping elements due to indexing changes
     for i in range(len(data) - 1, -1, -1):
         if counts[data[i]] > n:
             del data[i]
@@ -82,52 +87,17 @@ def solution_in_place(data, n):
     return data
 
 
+## Profiling
 
+from profiler import profiler
 
-# Modifying the profile_function to measure the execution time of a function called multiple times
+repeat = 2000000
 
-def profile_function_repeated(func, repetitions):
-    """
-    A function to measure the execution time of a function called repeatedly.
-    
-    Args:
-    - func: The function to be profiled.
-    - repetitions: The number of times to execute the function.
-    
-    Returns:
-    The total execution time for all repetitions.
-    """
-    def wrapper(*args, **kwargs):
-        total_time = 0  # Total execution time
-        for _ in range(repetitions):
-            start_time = time.time()  # Start time before function execution
-            func(*args, **kwargs)  # Execute the function
-            end_time = time.time()  # End time after function execution
-            total_time += (end_time - start_time)  # Accumulate execution time
-        avg_time = total_time / repetitions
-        print(f"{func.__name__} called {repetitions} times took {total_time} seconds in total.")
-        # print(f"Average time per call: {avg_time} seconds.")
-        return total_time
-    
-    return wrapper
+p = profiler(solution_in_place, repeat)
+p([1, 2, 2, 3, 3, 3, 2, 4, 1, 5, 5], 2)  
 
-# Example function to be profiled
-def example_function_to_repeat(n):
-    """
-    Another example function that calculates the sum of numbers from 1 to n.
-    """
-    return sum(range(1, n + 1))
+p = profiler(solution2, repeat)
+p([1, 2, 2, 3, 3, 3, 2, 4, 1, 5, 5], 2)  
 
-# Profiling the example function to repeat it 1000000 times
-# Note: Calling the profiler directly with a function and repetition count
-
-repeat = 20000000
-
-profiler = profile_function_repeated(solution_in_place, repeat)
-profiler([1, 2, 2, 3, 3, 3, 2, 4, 1, 5, 5], 2)  
-
-profiler = profile_function_repeated(solution2, repeat)
-profiler([1, 2, 2, 3, 3, 3, 2, 4, 1, 5, 5], 2)  
-
-profiler = profile_function_repeated(solution, repeat)
-profiler([1, 2, 2, 3, 3, 3, 2, 4, 1, 5, 5], 2)  
+p = profiler(solution, repeat)
+p([1, 2, 2, 3, 3, 3, 2, 4, 1, 5, 5], 2)  
